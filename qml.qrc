@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>LoginScreen.qml</file>
+        <file>MyButton.qml</file>
+        <file>MyTextInput.qml</file>
+        <file>HudaAccessories.png</file>
+        <file>OperatingScreen.qml</file>
+        <file>TextBox.qml</file>
+    </qresource>
+</RCC>
