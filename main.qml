@@ -6,7 +6,7 @@ Window {
     visible: true
     width: 1200
     height: 600
-    title: qsTr(" Multi-Screen")
+    title: qsTr(" Chating")
     Image {
         id: background
         visible: true

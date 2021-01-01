@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QTcpSocket>
+#include <QDataStream>
 class Worker: public QObject
 {
     Q_OBJECT
@@ -24,7 +25,7 @@ public slots:
 
 private:
     QTcpSocket *tcpSocket;
-    int socketDescriptor;
+    QVariant socketDescriptor;
 };
 
 #endif // WORKER_H

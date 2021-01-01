@@ -23,7 +23,7 @@ public:
 
 public slots:
     void onDisconected();
-    void onDetectNewConnection();
+//    void onDetectNewConnection();
     void onReadyRead(QByteArray msg);
     void onSendSuccess();
 
@@ -34,6 +34,8 @@ signals:
     void haveMessage(QByteArray msg);
     void SendMessage(QByteArray msg);
     void sendSuccess();
+protected:
+    void incomingConnection(qintptr socketDescriptor);
 };
 
 #endif // MYSERVER_H

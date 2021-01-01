@@ -6,17 +6,25 @@ Worker::Worker(int socketDescriptor, QObject *parent) :QObject(parent)
 }
 void Worker::ReadMessage()
 {
-    QByteArray data;
-    qDebug() << this->socketDescriptor;
+    QByteArray array;
+    array.append("From ");
+    array.append(this->socketDescriptor.toString());
+    array.append(":");
     if(this->tcpSocket->bytesAvailable())
     {
-        data = this->tcpSocket->readAll();
+        array.append(this->tcpSocket->readAll());
     }
-    emit this->haveMessage(data);
+
+    qDebug()<< array;
+    emit this->haveMessage(array);
 }
 void Worker::sendTcp(QByteArray msg)
 {
-    this->tcpSocket->write(msg);
+    QByteArray dataout;
+    QDataStream out(&dataout,QIODevice::WriteOnly);
+    out.setByteOrder(QDataStream::BigEndian);
+    out << msg;
+    this->tcpSocket->write(dataout);
     emit this->sendSuccess();
 }
 void Worker::disconnect()
@@ -30,7 +38,7 @@ void Worker::doWork()
     qDebug() << this->socketDescriptor;
 
     this->tcpSocket = new QTcpSocket();
-    if(this->tcpSocket->setSocketDescriptor(this->socketDescriptor))
+    if(this->tcpSocket->setSocketDescriptor(this->socketDescriptor.toInt()))
     {
         connect(this->tcpSocket,&QTcpSocket::readyRead,this,&Worker::ReadMessage,Qt::ConnectionType::DirectConnection);
         connect(this->tcpSocket,&QTcpSocket::disconnected,this,&Worker::disconnect);

@@ -8,15 +8,14 @@ QString MyServer::listenTcp()
 {
     if( this->listen(QHostAddress::Any,8000))
     {
-        connect( this,&QTcpServer::newConnection,this,&MyServer::onDetectNewConnection);
         return " Server is listen....";
     }
     return " Server is listen already!!!";
 }
 QString MyServer::closeTcp()
 {   
-    disconnect(this,&QTcpServer::newConnection,this,&MyServer::onDetectNewConnection);
     this->close();
+    this->deleteLater();
     return "Server is close sucess";
 
 }
@@ -25,18 +24,20 @@ void MyServer::sendTcp(QByteArray msg)
     emit SendMessage(msg);
 }
 
-//slot
-void MyServer::onDetectNewConnection()
+// Overwrite
+void MyServer::incomingConnection(qintptr socketDescriptor)
 {
-    Worker *TcpWorker = new Worker( this->nextPendingConnection()->socketDescriptor());
+    Worker *TcpWorker = new Worker( socketDescriptor);
     QThread *mythread = new QThread();
-
-
+    // delete object
     connect(mythread,&QThread::finished,mythread,&QThread::deleteLater);
+    // when thread start, slot will call before thread become loop
     connect(mythread,&QThread::started,TcpWorker,&Worker::doWork);
+
     connect(TcpWorker,&Worker::haveMessage,this,&MyServer::onReadyRead);
     connect(TcpWorker,&Worker::socketdisconnect,this,&MyServer::onDisconected);
     connect(TcpWorker,&Worker::sendSuccess,this,&MyServer::onSendSuccess);
+    connect(this,&MyServer::destroyed,TcpWorker,&Worker::disconnect);
 
     connect(this,&MyServer::SendMessage,TcpWorker,&Worker::sendTcp);
     TcpWorker->moveToThread(mythread);

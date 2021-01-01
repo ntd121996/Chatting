@@ -17,7 +17,6 @@ SOURCES += \
         backend.cpp \
         myserver.cpp \
         main.cpp \
-        mythread.cpp \
         worker.cpp
 
 RESOURCES += qml.qrc
@@ -36,5 +35,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     backend.h \
     myserver.h \
-    mythread.h \
     worker.h
